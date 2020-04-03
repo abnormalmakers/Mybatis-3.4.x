@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 MyBatis SQL Mapper Framework for Java
 =====================================
 
@@ -21,3 +22,7 @@ Essentials
 * [See the docs](http://mybatis.github.io/mybatis-3)
 * [Download Latest](https://github.com/mybatis/mybatis-3/releases)
 * [Download Snapshot](https://oss.sonatype.org/content/repositories/snapshots/org/mybatis/mybatis/)
+=======
+# Mybatis-3.4.x
+mybatis 源码解析
+>>>>>>> a5cae3d8d2c31d7a42776ade71082b9f122090e0
