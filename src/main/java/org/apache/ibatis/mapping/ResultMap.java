@@ -33,6 +33,7 @@ import org.apache.ibatis.session.Configuration;
 
 /**
  * @author Clinton Begin
+ * 用于解析mapper.xml文件中的resultMap节点，使用ResultMapping来封装id，result等子元素；
  */
 public class ResultMap {
   private Configuration configuration;
