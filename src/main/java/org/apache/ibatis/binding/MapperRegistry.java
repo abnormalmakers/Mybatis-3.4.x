@@ -30,10 +30,14 @@ import org.apache.ibatis.session.SqlSession;
  * @author Clinton Begin
  * @author Eduardo Macarron
  * @author Lasse Voss
+ * Mapper 接口与对应的代理对象工厂的注册中心
  */
 public class MapperRegistry {
 
   private final Configuration config;
+  /**
+   * 记录 mapper 接口和对应的 MapperProxyFactory 之间的关系
+   */
   private final Map<Class<?>, MapperProxyFactory<?>> knownMappers = new HashMap<>();
 
   public MapperRegistry(Configuration config) {

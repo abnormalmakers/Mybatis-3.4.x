@@ -97,6 +97,8 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
 
 /**
  * @author Clinton Begin
+ * Mybatis启动初始化的核心就是将所有xml配置文件信息加载到Configuration对象中，
+ * Configuration是单例的，生命周期是应用级的；
  */
 public class Configuration {
 

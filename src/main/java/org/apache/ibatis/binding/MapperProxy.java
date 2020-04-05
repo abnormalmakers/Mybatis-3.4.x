@@ -32,6 +32,7 @@ import org.apache.ibatis.session.SqlSession;
 /**
  * @author Clinton Begin
  * @author Eduardo Macarron
+ * 实现了 InvocationHandler 接口，既是代理对象，又是调用处理器
  */
 public class MapperProxy<T> implements InvocationHandler, Serializable {
 
@@ -40,7 +41,9 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
       | MethodHandles.Lookup.PACKAGE | MethodHandles.Lookup.PUBLIC;
   private static final Constructor<Lookup> lookupConstructor;
   private static final Method privateLookupInMethod;
+  /**记录关联的 SqlSession 对象**/
   private final SqlSession sqlSession;
+  /** mapper 接口对应的 Class 对象**/
   private final Class<T> mapperInterface;
   private final Map<Method, MapperMethodInvoker> methodCache;
 
@@ -79,9 +82,15 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
   @Override
   public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
     try {
+      /**
+       * 如果是 Object 本身的方法，则不做增强
+       */
       if (Object.class.equals(method.getDeclaringClass())) {
         return method.invoke(this, args);
       } else {
+        /** invoke 方法调用的是内部接口 MapperMethodInvoker 的 invoke 方法
+         *
+         **/
         return cachedInvoker(method).invoke(proxy, method, args, sqlSession);
       }
     } catch (Throwable t) {
@@ -139,6 +148,9 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
       this.mapperMethod = mapperMethod;
     }
 
+    /**
+     * 调用 execute 执行 sql
+     */
     @Override
     public Object invoke(Object proxy, Method method, Object[] args, SqlSession sqlSession) throws Throwable {
       return mapperMethod.execute(sqlSession, args);
