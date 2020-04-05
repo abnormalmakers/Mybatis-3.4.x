@@ -20,6 +20,8 @@ package org.apache.ibatis.mapping;
  * It creates the SQL that will be passed to the database out of the input parameter received from the user.
  *
  * @author Clinton Begin
+ * SqlSource 对象的责任，就是根据传入的参数对象，动态计算出这个 BoundSql，
+ * 比如说 Mapper 文件中的 <if /> 节点的计算，是由 SqlSource 对象完成的
  */
 public interface SqlSource {
 
