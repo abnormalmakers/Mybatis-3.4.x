@@ -38,6 +38,28 @@ import org.apache.ibatis.session.Configuration;
  * BoundSql (结果对象)
  * 	是 SqlSource 通过对 sql和参数 联合解析得到的 sql和参数
  * 	有3个常用属性   sql / parameterObject / parameterMappings
+ *
+ * 	parameterObject 为参数本身，可以传递简单对象，pojo，或者map、@Param注解的参数
+ * 	      1.传递简单对象。如 int String float double 等
+ * 						当传递 int 时 mybatis会把参数变为 Integer 对象传递 ， 类似 long String float double也是如此
+ *
+ * 				2.传递 POJO 或 Map ， 直接传入
+ *
+ * 				3.传递多个参数：
+ * 						如果没有@Param注解，
+ * 								那么 mybatis 会把 parameterObject 变为一个Map <String,Object> 对象，
+ * 								键值关系按顺序来划分，类似 {"1":p1,"2":p2}  {"param1":p1,"param2":p2}
+ * 								所以 sql 才能用 #{1} #{2} 或 #{param1} #{param2} 获取
+ *
+ * 						如果有@Param
+ * 							  那么 mybatis 也会把 parameterObject 变为一个 Map<String,Object> 对象，
+ * 								键值关系按传入的key来，类似 {"key1":p1,"key2":p2}
+ * 								同时也包含 {"param1":p1,"param2":p2}
+ * 								所以 #{param1} #{param2}依旧有效，但# {1} #{2} 这种写法无效
+ *
+ * 	ParameterMappings
+ * 			一个List，每个元素都是 parameterMapping 对象，对象会描述参数，
+ * 			参数属性包括 属性名称， 表达式 javaType jdbcType typeHandler等重要信息
  */
 public class BoundSql {
   /** sql 语句 **/
