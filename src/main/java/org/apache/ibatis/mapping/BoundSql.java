@@ -33,8 +33,14 @@ import org.apache.ibatis.session.Configuration;
  *
  * @author Clinton Begin
  */
-public class BoundSql {
 
+/**
+ * BoundSql (结果对象)
+ * 	是 SqlSource 通过对 sql和参数 联合解析得到的 sql和参数
+ * 	有3个常用属性   sql / parameterObject / parameterMappings
+ */
+public class BoundSql {
+  /** sql 语句 **/
   private final String sql;
   private final List<ParameterMapping> parameterMappings;
   private final Object parameterObject;
