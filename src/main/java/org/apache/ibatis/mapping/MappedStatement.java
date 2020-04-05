@@ -29,24 +29,47 @@ import org.apache.ibatis.scripting.LanguageDriver;
 import org.apache.ibatis.session.Configuration;
 
 /**
+ * 用于存储 mapper.xml 文件中的 select、insert、update 和delete 节点，同时还包含了这些节点的很多重要属性；
+ * 作用是保存映射器节点,包括了我们配置的
+ * 				sql sql的id 缓存信息 resultMap parameterType resultMap 等重要配置内容
+ * 				其中他还有一个重要属性 SqlSource
  * @author Clinton Begin
  */
 public final class MappedStatement {
-
+  /** 命名空间 + 节点id **/
   private String resource;
+  /** Configuration 封装 mybatis 配置文件以及映射器信息 **/
   private Configuration configuration;
+  /** 节点的 id 属性 **/
   private String id;
+  /** 节点的 fetchSize 属性，查询数据的条数**/
   private Integer fetchSize;
+  /** 节点的 timeout 属性，设定超时时间**/
   private Integer timeout;
+  /** 节点的 StatementType 属性，默认值 StatementType.PREPARED,**/
   private StatementType statementType;
+  /** 节点的 resultType 属性**/
   private ResultSetType resultSetType;
+
+  /** 节点中的 sql 语句信息
+   *  mapper.xml文件中的sql语句会被解析成SqlSource对象，
+   *  经过解析SqlSource包含的语句最终仅仅包含 ? 占位符，可以直接提交给数据库执行;
+   *  提供 boundSql 对象的地方，是 MappedStatement 的一个属性，他有几个实现类
+   * 				DynamicSqlSource / ProviderSqlSource / RawSqlSource / StaticSqlSource
+   *  作用是根据上下文和参数解析需要生成的sql
+   **/
   private SqlSource sqlSource;
+
+  /** 对应的二级缓存 **/
   private Cache cache;
   private ParameterMap parameterMap;
+  /** 节点的 resultMaps 属性，表示最重要转换成那个 resultMap 返回**/
   private List<ResultMap> resultMaps;
   private boolean flushCacheRequired;
+  /** 节点下的属性 useCache，表示该节点是否使用二级缓存**/
   private boolean useCache;
   private boolean resultOrdered;
+  /** sql 语句类型 **/
   private SqlCommandType sqlCommandType;
   private KeyGenerator keyGenerator;
   private String[] keyProperties;
