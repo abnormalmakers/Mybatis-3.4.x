@@ -43,6 +43,13 @@ import org.apache.ibatis.session.SqlSession;
  * @author Eduardo Macarron
  * @author Lasse Voss
  * @author Kazuki Shimizu
+ *
+ * 封装了Mapper接口中对应方法的信息，以及对应的sql语句的信息；
+ * 它是mapper接口与映射配置文件中sql语句的桥梁；
+ * 作用：
+ *    找到session中对应的方法执行；
+ *    找到命名空间和方法名 ;
+ *    传递参数 ;
  */
 public class MapperMethod {
 
@@ -217,13 +224,15 @@ public class MapperMethod {
   }
 
   public static class SqlCommand {
-
+    /** sql 的名称： 命名空间 + 方法名称 **/
     private final String name;
+    /** 获取 sql 语句的类型 **/
     private final SqlCommandType type;
 
     public SqlCommand(Configuration configuration, Class<?> mapperInterface, Method method) {
       final String methodName = method.getName();
       final Class<?> declaringClass = method.getDeclaringClass();
+      /** 从 Configuration 中 获取 MappedStatement 信息 **/
       MappedStatement ms = resolveMappedStatement(mapperInterface, methodName, declaringClass,
           configuration);
       if (ms == null) {
