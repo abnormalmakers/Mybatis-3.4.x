@@ -141,6 +141,7 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
   }
 
   private static class PlainMethodInvoker implements MapperMethodInvoker {
+    /** MapperMethod 封装了 mapper 接口中的方法信息 **/
     private final MapperMethod mapperMethod;
 
     public PlainMethodInvoker(MapperMethod mapperMethod) {
