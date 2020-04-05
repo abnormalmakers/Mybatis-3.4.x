@@ -92,14 +92,23 @@ public class XMLConfigBuilder extends BaseBuilder {
   }
 
   public Configuration parse() {
+    /**
+     * 判断是否已经加载过配置文件，config 只能加载一次
+     */
     if (parsed) {
       throw new BuilderException("Each XMLConfigBuilder can only be used once.");
     }
     parsed = true;
+    /** 解析mybatis-config.xml ,封装 configuration 对象 **/
     parseConfiguration(parser.evalNode("/configuration"));
     return configuration;
   }
 
+  /**
+   * 通过
+   * 解析全局 mybatis-config.xml 文件中的所有节点
+   * @param root
+   */
   private void parseConfiguration(XNode root) {
     try {
       // issue #117 read properties first
@@ -117,6 +126,9 @@ public class XMLConfigBuilder extends BaseBuilder {
       environmentsElement(root.evalNode("environments"));
       databaseIdProviderElement(root.evalNode("databaseIdProvider"));
       typeHandlerElement(root.evalNode("typeHandlers"));
+      /**
+       * 解析 mappers 节点中的所有 映射器---- *Mapper.xml
+       * **/
       mapperElement(root.evalNode("mappers"));
     } catch (Exception e) {
       throw new BuilderException("Error parsing SQL Mapper Configuration. Cause: " + e, e);
@@ -358,9 +370,20 @@ public class XMLConfigBuilder extends BaseBuilder {
     }
   }
 
+  /**
+   * 找到 mappers 节点下的子节点 mapper，解析 mapper.xml 文件
+   * @param parent
+   * @throws Exception
+   */
   private void mapperElement(XNode parent) throws Exception {
     if (parent != null) {
+      /** 循环 mapper节点下的 mapper 节点
+       *  实例化  XMLMapperBuilder 对象处理节点
+       * */
       for (XNode child : parent.getChildren()) {
+        /** 先 if 判断 package 节点是否存在
+         *  如果不存在，else 再判断 mapper 节点
+         **/
         if ("package".equals(child.getName())) {
           String mapperPackage = child.getStringAttribute("name");
           configuration.addMappers(mapperPackage);
@@ -368,18 +391,28 @@ public class XMLConfigBuilder extends BaseBuilder {
           String resource = child.getStringAttribute("resource");
           String url = child.getStringAttribute("url");
           String mapperClass = child.getStringAttribute("class");
+          /**
+           * 先判断是否存在 resource 属性
+           * 如果没有，再判断 url
+           * 最后判断 mapperClass
+           */
           if (resource != null && url == null && mapperClass == null) {
             ErrorContext.instance().resource(resource);
             InputStream inputStream = Resources.getResourceAsStream(resource);
+            /** 实例化 XMLMapperBuilder 解析mapper 映射文件**/
             XMLMapperBuilder mapperParser = new XMLMapperBuilder(inputStream, configuration, resource, configuration.getSqlFragments());
+            /** 解析 mapper 文件 **/
             mapperParser.parse();
           } else if (resource == null && url != null && mapperClass == null) {
             ErrorContext.instance().resource(url);
             InputStream inputStream = Resources.getUrlAsStream(url);
+            /** 实例化 XMLMapperBuilder 解析mapper 映射文件**/
             XMLMapperBuilder mapperParser = new XMLMapperBuilder(inputStream, configuration, url, configuration.getSqlFragments());
+            /** 解析 mapper 文件 **/
             mapperParser.parse();
           } else if (resource == null && url == null && mapperClass != null) {
             Class<?> mapperInterface = Resources.classForName(mapperClass);
+            /** 向代理中心注册 mapper 接口 (dao接口)**/
             configuration.addMapper(mapperInterface);
           } else {
             throw new BuilderException("A mapper element may only specify a url, resource or class, but not more than one.");

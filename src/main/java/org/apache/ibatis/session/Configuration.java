@@ -104,12 +104,21 @@ public class Configuration {
 
   protected boolean safeRowBoundsEnabled;
   protected boolean safeResultHandlerEnabled = true;
+
+  /** 是否启用数据库字段到 javaBean property 驼峰映射*/
   protected boolean mapUnderscoreToCamelCase;
+
   protected boolean aggressiveLazyLoading;
   protected boolean multipleResultSetsEnabled = true;
+
+  /**允许 JDBC 强制生成主键，默认为false，如果设置为true，将强制使用被生成主键，一般用于生成主键 id**/
   protected boolean useGeneratedKeys;
+
   protected boolean useColumnLabel = true;
+
+  /** 配置全局 cache 开关，默认 true **/
   protected boolean cacheEnabled = true;
+
   protected boolean callSettersOnNulls;
   protected boolean useActualParamName = true;
   protected boolean returnInstanceForEmptyRow;
@@ -144,8 +153,11 @@ public class Configuration {
    */
   protected Class<?> configurationFactory;
 
+  /** mapper 接口的动态代理注册中心 **/
   protected final MapperRegistry mapperRegistry = new MapperRegistry(this);
+
   protected final InterceptorChain interceptorChain = new InterceptorChain();
+  /** TypeHandler 注册中心 **/
   protected final TypeHandlerRegistry typeHandlerRegistry = new TypeHandlerRegistry(this);
   protected final TypeAliasRegistry typeAliasRegistry = new TypeAliasRegistry();
   protected final LanguageDriverRegistry languageRegistry = new LanguageDriverRegistry();

@@ -92,13 +92,24 @@ public class XMLMapperBuilder extends BaseBuilder {
 
   public void parse() {
     if (!configuration.isResourceLoaded(resource)) {
+      /** 解析 mapper 文件**/
       configurationElement(parser.evalNode("/mapper"));
+      /** 将 mapper 文件添加到 configuration.loadResource 中**/
       configuration.addLoadedResource(resource);
+      /** 注册 mapper 接口**/
       bindMapperForNamespace();
     }
-
+    /**
+     * 处理解析失败的 resultMap 节点
+     */
     parsePendingResultMaps();
+    /**
+     * 处理解析失败的 CacheRef 节点
+     */
     parsePendingCacheRefs();
+    /**
+     * 处理解析失败的 sql 语句节点
+     */
     parsePendingStatements();
   }
 
@@ -106,6 +117,15 @@ public class XMLMapperBuilder extends BaseBuilder {
     return sqlFragments.get(refid);
   }
 
+  /**
+   * 解析 mapper.xml 文件中的各个节点，包括
+   * 命名空间 namespace，
+   * 缓存 cache，
+   * select/update/delete 标签
+   * resultMap、
+   * sql
+   * @param context
+   */
   private void configurationElement(XNode context) {
     try {
       String namespace = context.getStringAttribute("namespace");
@@ -118,6 +138,10 @@ public class XMLMapperBuilder extends BaseBuilder {
       parameterMapElement(context.evalNodes("/mapper/parameterMap"));
       resultMapElements(context.evalNodes("/mapper/resultMap"));
       sqlElement(context.evalNodes("/mapper/sql"));
+      /**
+       * 解析 select|insert|update|delete 节点
+       * 由 XMLStatementBuilder 对象负责解析
+       */
       buildStatementFromContext(context.evalNodes("select|insert|update|delete"));
     } catch (Exception e) {
       throw new BuilderException("Error parsing Mapper XML. The XML location is '" + resource + "'. Cause: " + e, e);
@@ -131,10 +155,15 @@ public class XMLMapperBuilder extends BaseBuilder {
     buildStatementFromContext(list, null);
   }
 
+  /**
+   * 处理所有 sql 语句节点并注册制 configuration 对象
+   */
   private void buildStatementFromContext(List<XNode> list, String requiredDatabaseId) {
     for (XNode context : list) {
+      /** 实例化 XMLStatementBuilder，专注于解析 sql 语句节点**/
       final XMLStatementBuilder statementParser = new XMLStatementBuilder(configuration, builderAssistant, context, requiredDatabaseId);
       try {
+        /** 解析 sql 语句节点 **/
         statementParser.parseStatementNode();
       } catch (IncompleteElementException e) {
         configuration.addIncompleteStatement(statementParser);
