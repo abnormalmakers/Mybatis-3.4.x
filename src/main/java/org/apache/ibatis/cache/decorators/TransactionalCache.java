@@ -34,6 +34,8 @@ import org.apache.ibatis.logging.LogFactory;
  *
  * @author Clinton Begin
  * @author Eduardo Macarron
+ *
+ * 二级缓存实现类
  */
 public class TransactionalCache implements Cache {
 
@@ -41,6 +43,7 @@ public class TransactionalCache implements Cache {
 
   private final Cache delegate;
   private boolean clearOnCommit;
+  /** 二级缓存的缓存池 **/
   private final Map<Object, Object> entriesToAddOnCommit;
   private final Set<Object> entriesMissedInCache;
 
