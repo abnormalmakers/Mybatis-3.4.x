@@ -35,6 +35,8 @@ import org.apache.ibatis.transaction.Transaction;
 /**
  * @author Clinton Begin
  * @author Eduardo Macarron
+ *
+ * 二级缓存的实现
  */
 public class CachingExecutor implements Executor {
 
@@ -92,14 +94,17 @@ public class CachingExecutor implements Executor {
   @Override
   public <E> List<E> query(MappedStatement ms, Object parameterObject, RowBounds rowBounds, ResultHandler resultHandler, CacheKey key, BoundSql boundSql)
       throws SQLException {
+    /** 从 MappedStatement 中获取 cache，判断二级缓存是否开启 **/
     Cache cache = ms.getCache();
     if (cache != null) {
       flushCacheIfRequired(ms);
       if (ms.isUseCache() && resultHandler == null) {
         ensureNoOutParams(ms, boundSql);
         @SuppressWarnings("unchecked")
+        /** 从二级缓存中获取数据，不为空直接返回**/
         List<E> list = (List<E>) tcm.getObject(cache, key);
         if (list == null) {
+          /** 二级缓存为空，继续往下查询**/
           list = delegate.query(ms, parameterObject, rowBounds, resultHandler, key, boundSql);
           tcm.putObject(cache, key, list); // issue #578 and #116
         }
