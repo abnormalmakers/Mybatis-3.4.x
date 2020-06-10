@@ -66,6 +66,7 @@ public class SimpleExecutor extends BaseExecutor {
 
       /** 使用 prepareHandler 对占位符进行处理
        *  Connection 连接对象在这里获取
+       *  获取 Statement 对象
        * **/
       stmt = prepareStatement(handler, ms.getStatementLog());
       /**

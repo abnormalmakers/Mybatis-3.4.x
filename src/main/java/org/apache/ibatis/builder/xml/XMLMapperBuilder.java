@@ -92,9 +92,9 @@ public class XMLMapperBuilder extends BaseBuilder {
 
   public void parse() {
     if (!configuration.isResourceLoaded(resource)) {
-      /** 解析 mapper 文件**/
+      /** 解析 mapper 映射文件, 把 XxxMapper.xml 中所有节点解析出并存到 Configuration 对象中**/
       configurationElement(parser.evalNode("/mapper"));
-      /** 将 mapper 文件添加到 configuration.loadResource 中,记录加载了哪些 xml 文件**/
+      /** 将 mapper 文件添加到 configuration.loadResource(set 集合) 中,记录加载了哪些 xml 文件**/
       configuration.addLoadedResource(resource);
       /** 注册 mapper 接口**/
       bindMapperForNamespace();
@@ -133,10 +133,18 @@ public class XMLMapperBuilder extends BaseBuilder {
         throw new BuilderException("Mapper's namespace cannot be empty");
       }
       builderAssistant.setCurrentNamespace(namespace);
+      /** 解析 cache-ref 节点 */
       cacheRefElement(context.evalNode("cache-ref"));
+      /** 解析 cache 节点 */
       cacheElement(context.evalNode("cache"));
       parameterMapElement(context.evalNodes("/mapper/parameterMap"));
+      /** 解析 resultMap 节点 */
       resultMapElements(context.evalNodes("/mapper/resultMap"));
+      /**
+       * 解析 sql 片段--》
+       * <sql> id,name,age </sql>
+       * <sql> id =2 and name ="qmy"</sql>
+       */
       sqlElement(context.evalNodes("/mapper/sql"));
       /**
        * 解析 select|insert|update|delete 节点
@@ -228,6 +236,11 @@ public class XMLMapperBuilder extends BaseBuilder {
     }
   }
 
+  /**
+   * 通过 context 对象读取出 cache 各个属性值
+   * 最后交由 builderAssistant 创建缓存对象并存入 configuration 对象
+   * @param context
+   */
   private void cacheElement(XNode context) {
     if (context != null) {
       String type = context.getStringAttribute("type", "PERPETUAL");
@@ -239,6 +252,7 @@ public class XMLMapperBuilder extends BaseBuilder {
       boolean readWrite = !context.getBooleanAttribute("readOnly", false);
       boolean blocking = context.getBooleanAttribute("blocking", false);
       Properties props = context.getChildrenAsProperties();
+      /** 通过 builderAssistant 对象创建缓存对象，并添加到 configuration 对象里*/
       builderAssistant.useNewCache(typeClass, evictionClass, flushInterval, size, readWrite, blocking, props);
     }
   }

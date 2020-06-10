@@ -140,6 +140,9 @@ public class Configuration {
 
   protected Properties variables = new Properties();
   protected ReflectorFactory reflectorFactory = new DefaultReflectorFactory();
+  /**
+   * Mybatis 每次创建结果对象的新实例时，都会使用对象工厂 ObjectFactory 去创建 pojo
+   */
   protected ObjectFactory objectFactory = new DefaultObjectFactory();
   protected ObjectWrapperFactory objectWrapperFactory = new DefaultObjectWrapperFactory();
 

@@ -81,7 +81,9 @@ public class SqlSessionFactoryBuilder {
    */
   public SqlSessionFactory build(InputStream inputStream, String environment, Properties properties) {
     try {
-      /** 解析输入流，即 mybatis-configs.xml 配置文件 **/
+      /** 解析输入流，即 mybatis-configs.xml 配置文件
+       *  在此创建 configuration 对象
+       * **/
       XMLConfigBuilder parser = new XMLConfigBuilder(inputStream, environment, properties);
       /** parser.parse() 解析 mybatis-configs 全局配置文件 **/
       return build(parser.parse());

@@ -36,7 +36,7 @@ import org.apache.ibatis.transaction.Transaction;
  * @author Clinton Begin
  * @author Eduardo Macarron
  *
- * 二级缓存的实现
+ * 二级缓存的 Excutor
  */
 public class CachingExecutor implements Executor {
 

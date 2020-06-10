@@ -127,7 +127,7 @@ public class XMLConfigBuilder extends BaseBuilder {
       databaseIdProviderElement(root.evalNode("databaseIdProvider"));
       typeHandlerElement(root.evalNode("typeHandlers"));
       /**
-       * 解析 mappers 节点中的所有 映射器---- *Mapper.xml
+       * 解析 <mappers></mappers> 节点中的所有 映射器---- *Mapper.xml
        * **/
       mapperElement(root.evalNode("mappers"));
     } catch (Exception e) {
@@ -377,17 +377,18 @@ public class XMLConfigBuilder extends BaseBuilder {
    */
   private void mapperElement(XNode parent) throws Exception {
     if (parent != null) {
-      /** 循环 mapper节点下的 mapper 节点
+      /** 循环 mappers 节点下的 mapper 节点
        *  实例化  XMLMapperBuilder 对象处理节点
        * */
       for (XNode child : parent.getChildren()) {
-        /** 先 if 判断 package 节点是否存在
-         *  如果不存在，else 再判断 mapper 节点
+        /** 先 if 判断 <package></package> 节点是否存在
+         *  如果不存在，else 再判断 <mapper></mapper> 节点
          **/
         if ("package".equals(child.getName())) {
           String mapperPackage = child.getStringAttribute("name");
           configuration.addMappers(mapperPackage);
         } else {
+          /** 拿到 mapper.xml 映射文件路径 */
           String resource = child.getStringAttribute("resource");
           String url = child.getStringAttribute("url");
           String mapperClass = child.getStringAttribute("class");
@@ -398,6 +399,7 @@ public class XMLConfigBuilder extends BaseBuilder {
            */
           if (resource != null && url == null && mapperClass == null) {
             ErrorContext.instance().resource(resource);
+            /** 将 mapper.xml 映射文件转换为流对象 */
             InputStream inputStream = Resources.getResourceAsStream(resource);
             /** 实例化 XMLMapperBuilder 解析mapper 映射文件**/
             XMLMapperBuilder mapperParser = new XMLMapperBuilder(inputStream, configuration, resource, configuration.getSqlFragments());
