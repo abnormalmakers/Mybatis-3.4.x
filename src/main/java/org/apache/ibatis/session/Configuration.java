@@ -324,6 +324,10 @@ public class Configuration {
   }
 
   public void addLoadedResource(String resource) {
+    /**
+     * loadedResources 一个 HashSet，用于存储 mapper 全路径文件名，以及接口全限定名
+     * 如：{"mappers/user.xml","namespace:com.qmy.mapper.UserMapper"}
+     */
     loadedResources.add(resource);
   }
 
@@ -661,6 +665,9 @@ public class Configuration {
     } else {
       executor = new SimpleExecutor(this, transaction);
     }
+    /**
+     * cacheEnabled,全局缓存开关，默认为 true
+     */
     if (cacheEnabled) {
       executor = new CachingExecutor(executor);
     }
