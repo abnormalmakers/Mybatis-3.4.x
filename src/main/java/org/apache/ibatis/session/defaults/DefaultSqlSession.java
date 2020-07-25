@@ -144,6 +144,9 @@ public class DefaultSqlSession implements SqlSession {
   @Override
   public <E> List<E> selectList(String statement, Object parameter, RowBounds rowBounds) {
     try {
+      /**
+       * 根据命名空间 即 MappedStatement 的 id 值找到对应的 MappedStatement 对象
+       */
       MappedStatement ms = configuration.getMappedStatement(statement);
       return executor.query(ms, wrapCollection(parameter), rowBounds, Executor.NO_RESULT_HANDLER);
     } catch (Exception e) {
@@ -289,6 +292,18 @@ public class DefaultSqlSession implements SqlSession {
 
   @Override
   public <T> T getMapper(Class<T> type) {
+    /**
+     * 这里传入一个 sqlSession 是因为 MapperProxy 调用处理器需要，
+     * 因为 getMapper() 方法，MapperProxyFactory 会返回一个实现了 mapper 接口的代理对象
+     * 这个代理对象执行 mapper 方法进行数据库操作的时候，调用的是 MapperProxy 调用处理器的 invoke 方法
+     * 在真正执行查询的时候还是需要 sqlSession，所以 MapperProxy 类需要拿到 sqlSession
+     * 所以在这里传入 sqlSession 构建 MapperProxy 对象
+     * 总结：
+     *  为什么要传入 sqlSession？
+     *    因为创建 MapperProxy 对象需要 sqlSession
+     *  为什么 MapperProxy 对象需要 sqlSession？
+     *    因为 MapperProxy 是个调用处理器，在进行代理功能增强的时候需要执行真实目标方法，所以需要拿到 sqlSession
+     */
     return configuration.getMapper(type, this);
   }
 

@@ -28,6 +28,7 @@ import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.transaction.Transaction;
 
 /**
+ * 定义了数据库的基本操作方法， sqlSession 的功能都是基于它来实现
  * @author Clinton Begin
  */
 public interface Executor {

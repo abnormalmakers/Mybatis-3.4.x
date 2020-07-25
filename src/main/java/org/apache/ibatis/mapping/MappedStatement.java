@@ -36,11 +36,11 @@ import org.apache.ibatis.session.Configuration;
  * @author Clinton Begin
  */
 public final class MappedStatement {
-  /** 命名空间 + 节点id **/
+  /** mapper.xml 的classpath 路径 **/
   private String resource;
   /** Configuration 封装 mybatis 配置文件以及映射器信息 **/
   private Configuration configuration;
-  /** 节点的 id 属性 **/
+  /** 命名空间 + 节点id **/
   private String id;
   /** 节点的 fetchSize 属性，查询数据的条数**/
   private Integer fetchSize;
