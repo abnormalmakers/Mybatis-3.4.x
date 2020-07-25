@@ -128,6 +128,10 @@ public class XMLMapperBuilder extends BaseBuilder {
    */
   private void configurationElement(XNode context) {
     try {
+      /**
+       * context 是 parser.evalNode("/mapper") 解析mapper节点得到的 XNode
+       * parser 是 XPathParser
+       */
       String namespace = context.getStringAttribute("namespace");
       if (namespace == null || namespace.isEmpty()) {
         throw new BuilderException("Mapper's namespace cannot be empty");
@@ -459,10 +463,17 @@ public class XMLMapperBuilder extends BaseBuilder {
   }
 
   private void bindMapperForNamespace() {
+    /**
+     * 获取 mapper 接口 全限定名 namespace，
+     * 如果： com.qmy.mapper.UserMapper
+     */
     String namespace = builderAssistant.getCurrentNamespace();
     if (namespace != null) {
       Class<?> boundType = null;
       try {
+        /**
+         * 获取 mapper 接口的 Class 对象
+         */
         boundType = Resources.classForName(namespace);
       } catch (ClassNotFoundException e) {
         // ignore, bound type is not required
