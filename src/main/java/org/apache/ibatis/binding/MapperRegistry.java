@@ -33,7 +33,7 @@ import org.apache.ibatis.session.SqlSession;
  * Mapper 接口与对应的代理对象工厂的注册中心
  */
 public class MapperRegistry {
-
+  /** 全局配置文件的封装对象 */
   private final Configuration config;
   /**
    * 记录 mapper 接口和对应的 MapperProxyFactory 之间的关系
@@ -78,6 +78,9 @@ public class MapperRegistry {
       }
       boolean loadCompleted = false;
       try {
+        /**
+         * knowMapper 是一个 HashMap<Class<?>,MapperProxyFactory<Class<?>>>
+         */
         knownMappers.put(type, new MapperProxyFactory<>(type));
         // It's important that the type is added before the parser is run
         // otherwise the binding may automatically be attempted by the

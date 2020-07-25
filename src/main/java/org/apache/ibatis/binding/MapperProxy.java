@@ -88,8 +88,10 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
       if (Object.class.equals(method.getDeclaringClass())) {
         return method.invoke(this, args);
       } else {
-        /** invoke 方法调用的是内部接口 MapperMethodInvoker 的 invoke 方法
-         *
+        /** cachedInvoker(method) 返回一个 PlainMethodInvoker 对象
+         * 此对象实现了 MapperMethodInvoker 接口
+         * 内部维护了一个常量 MapperMethod，创建 MapperMethod 的同时又会创建 SqlCommand，保存 Sql 语句信息，以及sql语句类型（crud）
+         * invoke 方法调用的是内部接口 MapperMethodInvoker 的 invoke 方法
          **/
         return cachedInvoker(method).invoke(proxy, method, args, sqlSession);
       }
