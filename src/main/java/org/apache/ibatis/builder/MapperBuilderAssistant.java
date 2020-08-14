@@ -270,7 +270,12 @@ public class MapperBuilderAssistant extends BaseBuilder {
     if (unresolvedCacheRef) {
       throw new IncompleteElementException("Cache-ref not yet resolved");
     }
-
+    /**
+     * 获取当前方法的全限定名
+     * applyCurrentNamespace(id, false) 方法内部会做一个 mapper 接口全限定名 + 方法名 的拼接
+     * 例如: com.mybatis.org.findAll
+     *       接口全限定名    方法名
+     */
     id = applyCurrentNamespace(id, false);
     boolean isSelect = sqlCommandType == SqlCommandType.SELECT;
 
@@ -296,8 +301,13 @@ public class MapperBuilderAssistant extends BaseBuilder {
     if (statementParameterMap != null) {
       statementBuilder.parameterMap(statementParameterMap);
     }
-
+    /**
+     * 构造出当前 select | update | delete | insert 语句节点
+     */
     MappedStatement statement = statementBuilder.build();
+    /**
+     * 将当前
+     */
     configuration.addMappedStatement(statement);
     return statement;
   }

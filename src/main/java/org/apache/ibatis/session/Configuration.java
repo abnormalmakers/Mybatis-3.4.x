@@ -758,6 +758,13 @@ public class Configuration {
   }
 
   public void addMappedStatement(MappedStatement ms) {
+    /**
+     * mappedStatements 类型是一个 new StrictMap<MappedStatement>
+     * StrictMap 是一 Configuration 中的一个静态内部类，继承自 HashMap
+     * 并重写了 HashMap 的 put 方法。在重写的 put 方法中做了判断，
+     * ms.getId() = mapperNamespace + （SELECT | UPDATE | DELETE |INSERT 节点的 id）
+     * 会判断此 id 是否已经存在，存在则抛出异常，所以这就是为什么 mapper 接口中而方法不能实现重载
+     */
     mappedStatements.put(ms.getId(), ms);
   }
 
