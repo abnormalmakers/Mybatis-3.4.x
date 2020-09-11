@@ -306,7 +306,7 @@ public class MapperBuilderAssistant extends BaseBuilder {
      */
     MappedStatement statement = statementBuilder.build();
     /**
-     * 将当前
+     * 将当前节点封装为 MappedStatement，并添加进 configuration 配置类
      */
     configuration.addMappedStatement(statement);
     return statement;
