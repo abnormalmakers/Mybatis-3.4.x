@@ -117,6 +117,7 @@ public class XMLConfigBuilder extends BaseBuilder {
       loadCustomVfs(settings);
       loadCustomLogImpl(settings);
       typeAliasesElement(root.evalNode("typeAliases"));
+      /** 解析插件 */
       pluginElement(root.evalNode("plugins"));
       objectFactoryElement(root.evalNode("objectFactory"));
       objectWrapperFactoryElement(root.evalNode("objectWrapperFactory"));
@@ -196,10 +197,15 @@ public class XMLConfigBuilder extends BaseBuilder {
   private void pluginElement(XNode parent) throws Exception {
     if (parent != null) {
       for (XNode child : parent.getChildren()) {
+        /** 获取插件类名*/
         String interceptor = child.getStringAttribute("interceptor");
+        /** 获取插件属性 */
         Properties properties = child.getChildrenAsProperties();
+        /** 实例化插件对象*/
         Interceptor interceptorInstance = (Interceptor) resolveClass(interceptor).getDeclaredConstructor().newInstance();
+        /** 设置插件属性 */
         interceptorInstance.setProperties(properties);
+        /** 将插件保存到 Configuration 对象，并用 list 记录下插件顺序*/
         configuration.addInterceptor(interceptorInstance);
       }
     }
