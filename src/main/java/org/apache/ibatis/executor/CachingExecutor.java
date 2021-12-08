@@ -74,6 +74,9 @@ public class CachingExecutor implements Executor {
 
   @Override
   public int update(MappedStatement ms, Object parameterObject) throws SQLException {
+    /**
+     *  在执行写操作之前，先清除二级缓存
+     */
     flushCacheIfRequired(ms);
     return delegate.update(ms, parameterObject);
   }
@@ -167,6 +170,9 @@ public class CachingExecutor implements Executor {
   }
 
   private void flushCacheIfRequired(MappedStatement ms) {
+    /**
+     * 二级缓存是 MappedStatement 类中的属性 cache
+     */
     Cache cache = ms.getCache();
     if (cache != null && ms.isFlushCacheRequired()) {
       tcm.clear(cache);

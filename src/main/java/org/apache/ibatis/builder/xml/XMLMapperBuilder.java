@@ -171,6 +171,9 @@ public class XMLMapperBuilder extends BaseBuilder {
    * 处理所有 sql 语句节点并注册制 configuration 对象
    */
   private void buildStatementFromContext(List<XNode> list, String requiredDatabaseId) {
+    /**
+     *  遍历 <select /> <insert /> <update /> <delete />
+     */
     for (XNode context : list) {
       /** 实例化 XMLStatementBuilder，专注于解析 sql 语句节点**/
       final XMLStatementBuilder statementParser = new XMLStatementBuilder(configuration, builderAssistant, context, requiredDatabaseId);

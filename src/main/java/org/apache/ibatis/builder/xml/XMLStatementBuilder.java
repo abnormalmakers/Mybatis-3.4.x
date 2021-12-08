@@ -58,6 +58,9 @@ public class XMLStatementBuilder extends BaseBuilder {
      * 获取 sql 节点id
      */
     String id = context.getStringAttribute("id");
+    /**
+     * 获得 databaseId ， 判断 databaseId 是否匹配
+     */
     String databaseId = context.getStringAttribute("databaseId");
 
     if (!databaseIdMatchesCurrent(id, databaseId, this.requiredDatabaseId)) {
@@ -103,6 +106,7 @@ public class XMLStatementBuilder extends BaseBuilder {
 
     /**
      * 解析 sql 语句是解析 mapper.xml 的核心，实例化 sqlSource，使用 sqlSource 封装 sql 语句
+     * 获得 sql 语句标签上的各种属性
      */
     SqlSource sqlSource = langDriver.createSqlSource(configuration, context, parameterTypeClass);
     StatementType statementType = StatementType.valueOf(context.getStringAttribute("statementType", StatementType.PREPARED.toString()));
