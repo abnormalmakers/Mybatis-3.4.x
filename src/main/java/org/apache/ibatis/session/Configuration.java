@@ -161,6 +161,7 @@ public class Configuration {
   /** mapper 接口的动态代理注册中心 **/
   protected final MapperRegistry mapperRegistry = new MapperRegistry(this);
 
+  /** 存放插件的拦截链 */
   protected final InterceptorChain interceptorChain = new InterceptorChain();
   /** TypeHandler 注册中心 **/
   protected final TypeHandlerRegistry typeHandlerRegistry = new TypeHandlerRegistry(this);
@@ -646,6 +647,7 @@ public class Configuration {
 
   public StatementHandler newStatementHandler(Executor executor, MappedStatement mappedStatement, Object parameterObject, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql) {
     StatementHandler statementHandler = new RoutingStatementHandler(executor, mappedStatement, parameterObject, rowBounds, resultHandler, boundSql);
+    /** 拦截 StatementHandler，给 StatementHandler 生成代理对象*/
     statementHandler = (StatementHandler) interceptorChain.pluginAll(statementHandler);
     return statementHandler;
   }
@@ -671,6 +673,13 @@ public class Configuration {
     if (cacheEnabled) {
       executor = new CachingExecutor(executor);
     }
+    /** 通过 interceptorChain 遍历所有插件,执行所有 interceptor 插件的 plugin 方法
+     * 为目标对象即传入的参数  executor 生成动态代理对象
+     * 所以如果添加了插件 ，那么 executor 被 jdk 动态代理增强了，他的调用处理器是一个 Plugin 对象
+     * 当 executor 执行方法的时候，会先执行 Plugin 对象的 invoke 方法，
+     * 在 invoke 方法里执行 interceptor.intercept(),在 intercept() 方法中执行invocation.proceed()，责任链模式
+     * 之后再调用 method.invoke(target, args)，即 Executor 对象自己的逻辑
+     * */
     executor = (Executor) interceptorChain.pluginAll(executor);
     return executor;
   }

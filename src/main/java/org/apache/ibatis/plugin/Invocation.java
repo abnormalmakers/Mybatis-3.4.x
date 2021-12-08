@@ -20,6 +20,7 @@ import java.lang.reflect.Method;
 
 /**
  * @author Clinton Begin
+ * 封装拦截对象信息，作为拦截器拦截方法的参数，这样可以把拦截目标对象真正的执行方法放到 Interceptor 中完成
  */
 public class Invocation {
 
@@ -45,6 +46,7 @@ public class Invocation {
     return args;
   }
 
+  /** 执行目标对象逻辑 */
   public Object proceed() throws InvocationTargetException, IllegalAccessException {
     return method.invoke(target, args);
   }

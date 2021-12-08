@@ -23,9 +23,10 @@ import java.util.List;
  * @author Clinton Begin
  */
 public class InterceptorChain {
-
+  /** 用 list 存放添加的插件*/
   private final List<Interceptor> interceptors = new ArrayList<>();
 
+  /** 为目标对象生成动态代理对象 */
   public Object pluginAll(Object target) {
     for (Interceptor interceptor : interceptors) {
       target = interceptor.plugin(target);
